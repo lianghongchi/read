@@ -1,0 +1,84 @@
+{[include file="../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form form-post-table" action="" method="post">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名称</label>
+            <div class="layui-input-inline layui-noinput">{[$_admin.admin_name]}</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">原登录密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="oldpassword" maxlength="15" required lay-verify="required" placeholder="原登录密码" autocomplete="off" class="layui-input">
+                <!-- <div class="layui-form-mid layui-word-aux">选填项，2-15个字符</div> -->
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">新的登录密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="checkPassword" maxlength="16" value="" id="password" placeholder="请设置新的登录密码" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">设置新的登录密码，6-16位非空字符</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新的登录密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password2" required lay-verify="checkPassword2" maxlength="16" value="" placeholder="请确认新的登录密码" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">确认新的登录密码，6-16位非空字符</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+
+    form.render();
+
+    // 表单验证
+    form.verify({
+        checkPassword: function(value) {
+            if (value.length < 6 || value.length > 16) {
+                return '登录密码由为6-16位非空字符组成';
+            }
+        },
+        checkPassword2: function(value) {
+            var password = $('#password').val();
+            if (value != password) {
+                return '两次输入的登录密码不一致';
+            }
+        }
+    });
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+        confirmMessage('确认修改此条数据吗？', function() {
+            // 发起ajax请求
+            formRequest('?', 'post', data.field, function () {
+                // 显示loading 并刷新当前页面
+                showLoading();
+                parent.location.reload();
+            });
+            return false;
+        });
+        return false;
+    });
+
+</script>

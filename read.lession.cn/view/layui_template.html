@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Lession</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="{[$_resource.admin_static]}/layui_v2/css/layui.css" media="all">
+        <link rel="stylesheet" href="{[$_resource.admin_static]}/css/index.css" media="all">
+        <script src="{[$_resource.admin_static]}/js/jquery-1.11.3.min.js"></script>
+        <script src="{[$_resource.admin_static]}/layui_v2/layui.all.js"></script>
+        <script src="{[$_resource.admin_static]}/js/admin.js"></script>
+    </head>
+
+    <body layadmin-themealias="fashion-red" class="layui-layout-body">
+        <div id="LAY_app">
+            <div class="layui-layout layui-layout-admin">
+                <div class="layui-header">
+                    <!-- 头部区域 -->
+                    <ul class="layui-nav layui-layout-left">
+                        <li class="layui-nav-item layadmin-flexible">
+                            <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                                <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                            </a>
+                        </li>
+                        <li class="layui-nav-item layui-hide-xs">
+                            <a href="{[$_appsite.admin]}" target="_blank" title="前台首页">
+                                <i class="layui-icon layui-icon-home" style="font-weight: bold;"></i>
+                            </a>
+                        </li>
+                        <li class="layui-nav-item layui-hide-xs">
+                            <a href="javascript:;" id="reflush_page" title="刷新当前页面">
+                                <i class="layui-icon layui-icon-refresh-1" style="font-weight: bold;"></i>
+                            </a>
+                        </li>
+                        <span class="layui-nav-bar" style="left: 94px; top: 48px; width: 0px; opacity: 1;"></span>
+                    </ul>
+                    <ul class="layui-nav layui-layout-right">
+                        <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+                            <a href="javascript:;" layadmin-event="theme">
+                                <i class="layui-icon layui-icon-theme"></i>
+                            </a>
+                        </li>
+                        <li class="layui-nav-item" id="admin_top_menu">
+                            <a href="javascript:;"> <cite>{[$_admin.admin_name]}&nbsp;</cite>
+                                <span class="layui-nav-more"></span>
+                            </a>
+                            <dl class="layui-nav-child" style="margin-top: -5px;">
+                                <!--<dd>
+                                    <a href="javascript:;" w-url="#">修改密码</a>
+                                </dd>
+                                <hr>-->
+                                <dd>
+                                    <a href="{[$logoutUrl]}">安全退出</a>
+                                </dd>
+                            </dl>
+                        </li>
+                        <span class="layui-nav-bar"></span>
+                    </ul>
+                </div>
+
+                <!-- 侧边菜单 -->
+                <div class="layui-side layui-side-menu">
+                    <div class="layui-side-scroll">
+                        <div class="layui-logo"> <span>后台管理系统</span> </div>
+                        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu">
+
+                            {[foreach $menus as $key => $value]}
+                                {[if is_array($value)]}
+                                    {[if is_string($value.controller)]}
+                                        <li class="layui-nav-item">
+                                            <a href="javascript:;" is_top="1" f-url="{[$_baseUrl]}/{[$value.route]}" title="{[$_baseUrl]}/{[$value.route]}" f-title="{[$value.name]}">
+                                                <i class="layui-icon {[if empty($value.icon)]}layui-icon-flag{[else]}{[$value.icon]}{[/if]}"></i>
+                                                <cite>{[$value.name]}</cite>
+                                            </a>
+                                        </li>
+                                    {[else]}
+                                        <li data-name="set" class="layui-nav-item">
+                                            <a href="javascript:;" is_top="1" f-title="{[$value.name]}">
+                                                <i class="layui-icon {[if empty($value.icon)]}layui-icon-flag{[else]}{[$value.icon]}{[/if]}"></i>
+                                                <cite>{[$value.name]}</cite>
+                                                <span class="layui-nav-more"></span>
+                                            </a>
+                                            <dl class="layui-nav-child">
+                                                {[foreach $value.controller as $k => $val]}
+                                                    {[if is_string($val.controller)]}
+                                                        <dd data-name="security">
+                                                            <a href="javascript:;" f-title="{[$val.name]}" f-url="{[$_baseUrl]}/{[$val.route]}" title="{[$_baseUrl]}/{[$val.route]}">{[$val.name]}</a>
+                                                        </dd>
+                                                    {[else]}
+                                                        <dd data-name="base">
+                                                            <a href="javascript:;">{[$val.name]}<span class="layui-nav-more"></span></a>
+                                                            <dl class="layui-nav-child">
+                                                                {[foreach $val.controller as $v]}
+                                                                    <dd data-name="website">
+                                                                        <a href="javascript:;" f-title="{[$v.name]}" f-url="{[$_baseUrl]}/{[$v.route]}" title="{[$_baseUrl]}/{[$v.route]}">{[$v.name]}</a>
+                                                                    </dd>
+                                                                {[/foreach]}
+                                                            </dl>
+                                                        </dd>
+                                                    {[/if]}
+                                                {[/foreach]}
+                                            </dl>
+                                        </li>
+                                    {[/if]}
+                                {[/if]}
+                            {[/foreach]}
+                            <span class="layui-nav-bar" style="top: 0px; height: 56px; opacity: 0;"></span>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="layadmin-pagetabs" id="LAY_app_tabs">
+                    <div class="layui-icon layadmin-tabs-control layui-icon-prev"></div>
+                    <div class="layui-icon layadmin-tabs-control layui-icon-next"></div>
+                    <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                        <ul class="layui-nav layadmin-tabs-select">
+                            <li class="layui-nav-item" lay-unselect="">
+                                <a href="javascript:;" id="tab_close_menu"><span class="layui-nav-more"></span></a>
+                                <dl class="layui-nav-child layui-anim-fadein">
+                                    <dd id="close_other_tabs">
+                                        <a href="javascript:;">关闭其它标签页</a>
+                                    </dd>
+                                    <dd id="close_all_tabs">
+                                        <a href="javascript:;">关闭全部标签页</a>
+                                    </dd>
+                                </dl>
+                            </li> <span class="layui-nav-bar"></span></ul>
+                    </div>
+                    <div class="layui-tab">
+                        <ul class="layui-tab-title" id="LAY_app_tabsheader"></ul>
+                    </div>
+                </div>
+
+                <!-- 主体内容 -->
+                <div class="layui-body" id="LAY_app_body"></div>
+
+                <!-- 辅助元素，一般用于移动设备下遮罩 -->
+                <div class="layadmin-body-shade"></div>
+
+            </div>
+        </div>
+
+        <style id="LAY_layadmin_theme">
+        .layui-side-menu,
+            .layadmin-pagetabs .layui-tab-title li:after,
+            .layadmin-pagetabs .layui-tab-title li.layui-this:after,
+            .layui-layer-admin .layui-layer-title,
+            .layadmin-side-shrink .layui-side-menu .layui-nav>.layui-nav-item>.layui-nav-li {
+                background-color: #293846 !important;
+            }
+			.layui-side-menu .layui-nav>.layui-nav-li {
+				background-color: rgba(0, 0, 0, 0.3)!important
+			}
+
+            .layui-nav-tree .layui-this,
+            .layui-nav-tree .layui-this>a,
+            .layui-nav-tree .layui-nav-child dd.layui-this,
+            .layui-nav-tree .layui-nav-child dd.layui-this a {
+                background-color: rgba(0, 0, 0, 0.1)!important
+            }
+
+            .layui-layout-admin .layui-logo {
+                background-color: #323B55 !important;
+            }
+        }
+        </style>
+    </body>
+</html>
+
+
+<script type="text/javascript">
+    $(function() {
+
+        var homeUrl = "{[$homeUrl]}";
+
+        var app = '#LAY_app';
+        var flexible = '#LAY_app_flexible';
+        var w = $(window);
+
+        var shrink = 'layadmin-side-shrink';
+
+        // 隐藏页面内容
+        var tabspageNone = 'layadmin-tabspage-none';
+        var spreadSm     = 'layadmin-side-spread-sm';
+        var shade        = '.layadmin-body-shade';
+
+        // 隐藏菜单栏
+        $(flexible).click(function() {
+            var width = w.width();
+            $(sideMenu).find('dl').hide();
+
+            if(width > 1200) {
+                $(app).toggleClass(shrink);
+            } else if(width > 992) {
+                $(app).toggleClass(shrink);
+            } else {
+                $(app).toggleClass(spreadSm);
+            }
+        });
+
+        // 点击遮罩
+        $(shade).click(function() {
+            $(app).removeClass(spreadSm);
+            $(app).removeClass(tabspageNone);
+        });
+
+        window.onresize = function() {
+            var width = w.width();
+            if(width > 992) {
+                if($(app).hasClass(shrink)) {
+                    $(app).removeClass(shrink);
+                }
+            }
+        }
+
+        var sideMenu    = '.layui-side-menu';
+        var itemed      = 'layui-nav-itemed';
+        var thisAction  = 'layui-this';
+        var navMore     = '.layui-nav-more';
+        var actionClass = 'layui-nav-li';
+
+        // 点击菜单
+        $(sideMenu).find('a').click(function() {
+            var obj = $(this).siblings('dl');
+
+            if(obj.length > 0) {
+                if($(app).hasClass(shrink)) {
+                    $(app).removeClass(shrink);
+                }
+                menuTips && layer.close(menuTips);
+
+                if(obj.is(':hidden')) {
+                    if ($(this).attr('is_top')) {
+                        var iconMore = obj.parent().parent().find(navMore);
+                        iconMore.css({
+                            'transform' : 'rotate(0deg)',
+                            'right' : '15px',
+                            'top' : '50%',
+                        });
+                        obj.parent().parent().find('dl').slideUp(200);
+                    }
+
+                    iconMore = $(this).find(navMore);
+                    iconMore.css({
+                        'transform' : 'rotate(90deg)',
+                        'right' : '17px',
+                        'top' : '45%',
+                    });
+
+                    obj.slideDown(200);
+                    $(this).parent().siblings('li').removeClass(actionClass);
+                    $(this).parent().addClass(actionClass);
+                } else {
+                    var iconMore = obj.parent().find(navMore);
+                    iconMore.css({
+                        'transform' : 'rotate(0deg)',
+                        'right' : '15px',
+                        'top' : '50%',
+                    });
+                    obj.slideUp(200);
+                    $(this).parent().removeClass(actionClass);
+                }
+            } else {
+                $(sideMenu).find('dd').removeClass(thisAction);
+                $(sideMenu).find('li').removeClass(thisAction);
+                $(this).parent().addClass(thisAction);
+
+                var url = $(this).attr('f-url');
+                addTab(url, $(this).attr('f-title'), false);
+                if($(app).hasClass(spreadSm)) {
+                    $(app).removeClass(spreadSm);
+                    $(app).removeClass(tabspageNone);
+                }
+            }
+        });
+
+        var ifrBox = '#LAY_app_body';
+        var tabBox = '#LAY_app_tabsheader';
+
+        var ifrBoxID = '#layui-ifr-';
+        var tabBoxID = 'layui-ifr-tab-';
+
+        var tabBoxClass = '.layui-ifr-tab';
+        var tabClose = '.layui-tab-close';
+        var ifrids = 1;
+
+        // 添加tab
+        function addTab(url, name, is_home) {
+            var ifrArray = getIframeArray();
+            var tabArray = getTabArray();
+            var index  = getIframeIndex(url);
+            var isHome = is_home ? true : '';
+
+            ifrArray.hide();
+
+            if(index != 'none') {
+                ifrArray.eq(index).show();
+                tabArray.removeClass(thisAction);
+                tabArray.eq(index).addClass(thisAction);
+            } else {
+                var ifrHtml = '<iframe is_home="'+isHome+'" f-url="' + url + '" width="100%" height="100%" src="' + url + '" frameborder="0" seamless></iframe>';
+                $(ifrBox).append(ifrHtml);
+
+                var load = showLoading('加载中...');
+
+                index = getIframeIndex(url);
+                ifrArray = getIframeArray();
+                ifrArray.eq(index).load(function() {
+                    setTimeout(function(){layer.closeAll();},300);
+                });
+
+                var homeIcon = is_home ? '<i class="layui-icon layui-icon-home"></i>' : '';
+
+                var tabHtml = '<li is_home="'+isHome+'" f-url="' + url + '" class="layui-ifr-tab"><span>' + name + '</span> '+homeIcon+' <i class="layui-icon layui-unselect layui-tab-close">ဆ</i></li>';
+                $(tabBox).append(tabHtml);
+                ifrids++;
+
+                index = getTabIndex(url);
+                var tabArray = getTabArray();
+                tabArray.removeClass(thisAction);
+                tabArray.eq(index).addClass(thisAction);
+            }
+        }
+
+        addTab(homeUrl, '首页', true);
+
+        function getIframeArray() {
+            return $(ifrBox).find('iframe');
+        }
+
+        function getTabArray() {
+            return $(tabBox).find('li');
+        }
+
+        function getIframeIndex(url) {
+            var ifrArray = $(ifrBox).find('iframe');
+            var ifrLen = ifrArray.length;
+
+            for(var i = 0; i < ifrLen; i++) {
+                if(url == ifrArray.eq(i).attr('f-url')) {
+                    return i;
+                }
+            }
+            return 'none';
+        }
+
+        function getTabIndex(url) {
+            var tabArray = $(tabBox).find('li');
+            var tabLen = tabArray.length;
+
+            for(var i = 0; i < tabLen; i++) {
+                if(url == tabArray.eq(i).attr('f-url')) {
+                    return i;
+                }
+            }
+            return 'none';
+        }
+
+        // hover tips
+        var menuTips;
+        $(sideMenu).find('a').hover(function() {
+            if($(app).hasClass(shrink)) {
+                menuTips = layer.tips($(this).attr('f-title'), $(this));
+            }
+        }, function() {
+            if(menuTips) {
+                layer.close(menuTips);
+                menuTips = false;
+            }
+        });
+
+        // 关闭tab
+        $("body").on('click', tabClose, function() {
+            var tabLi = $(this).parent();
+            var url = tabLi.attr('f-url');
+            tabLi.remove();
+
+            var index = getIframeIndex(url);
+            var thisIframe = getIframeArray().eq(index);
+
+            if(!thisIframe.is(':hidden')) {
+                thisIframe.remove();
+
+                var tabArray = getTabArray();
+                tabArray.eq(tabArray.length - 1).addClass(thisAction);
+
+                var ifrArray = getIframeArray();
+                ifrArray.eq(ifrArray.length - 1).show();
+            } else {
+                thisIframe.remove();
+            }
+            tabRollPage("left");
+        });
+
+        // 点击tab
+        $("body").on('click', tabBoxClass, function() {
+            var url = $(this).attr('f-url');
+
+            var index = getTabIndex(url);
+            var tabArray = getTabArray();
+            var tab = tabArray.eq(index);
+
+            if(index != 'none' && !tab.hasClass(thisAction)) {
+                tabArray.removeClass(thisAction);
+                tab.addClass(thisAction);
+
+                index = getIframeIndex(url);
+                var ifrArray = getIframeArray();
+                ifrArray.hide();
+                ifrArray.eq(index).show();
+            }
+        });
+
+        // 关闭菜单
+        $('#tab_close_menu').click(function() {
+            var ob = $(this).siblings('dl');
+            ob.is(':hidden') ? ob.slideDown(200) : ob.slideUp(200);
+        });
+
+        // 关闭其它标签
+        $('#close_other_tabs').click(function() {
+            var ifrArray = getIframeArray();
+            var tabArray = getTabArray();
+
+            var ifrLen = ifrArray.length;
+
+            for(var i = 0; i < ifrLen; i++) {
+                var ifr = ifrArray.eq(i);
+                var tab = tabArray.eq(i);
+
+                if(ifr.is(':hidden') && !ifr.attr('is_home')) {
+                    ifr.remove();
+                }
+
+                if(!tab.hasClass(thisAction) && !ifr.attr('is_home')) {
+                    tab.remove();
+                }
+            }
+            $('#tab_close_menu').siblings('dl').hide();
+            tabRollPage("left");
+        });
+
+        // 关闭所有标签
+        $('#close_all_tabs').click(function() {
+            var ifrArray = getIframeArray();
+            var tabArray = getTabArray();
+            var ifrLen = ifrArray.length;
+
+            for(var i = 0; i < ifrLen; i++) {
+                var ifr = ifrArray.eq(i);
+                var tab = tabArray.eq(i);
+
+                if(!tab.attr('is_home')) {
+                    ifr.remove();
+                    tab.remove();
+                } else {
+                    ifr.show();
+                    tab.addClass(thisAction);
+                }
+            }
+            $('#tab_close_menu').siblings('dl').hide();
+            tabRollPage("left");
+        });
+
+        // 刷新当前页面
+        $('#reflush_page').click(function() {
+            var ifrArray = getIframeArray();
+            var ifrLen = ifrArray.length;
+
+            for(var i = 0; i < ifrLen; i++) {
+                var ob = ifrArray.eq(i);
+                if(!ob.is(':hidden')) {
+                    var load = showLoading('刷新中...');
+                    ob.attr('src', ob.attr('src'));
+                    ob.load(function() {
+                        layer.close(load);
+                    });
+                }
+            }
+        });
+
+        // 移动tab
+        $('.layui-icon-next').click(function() {
+            tabRollPage();
+        });
+        $('.layui-icon-prev').click(function() {
+            tabRollPage("left");
+        });
+
+        function tabRollPage(e, i) {
+            var t = $("#LAY_app_tabsheader"),
+                n = t.children("li"),
+                l = (t.prop("scrollWidth"), t.outerWidth()),
+                s = parseFloat(t.css("left"));
+            if("left" === e) {
+                if(!s && s <= 0) return;
+                var o = -s - l;
+                n.each(function(e, i) {
+                    var n = $(i),
+                        l = n.position().left;
+                    if(l >= o) return t.css("left", -l), !1
+                })
+            } else "auto" === e ? ! function() {
+                var e, o = n.eq(i);
+                if(o[0]) {
+                    if(e = o.position().left, e < -s) return t.css("left", -e);
+                    if(e + o.outerWidth() >= l - s) {
+                        var r = e + o.outerWidth() - (l - s);
+                        n.each(function(e, i) {
+                            var n = $(i),
+                                l = n.position().left;
+                            if(l + s > 0 && l - s > r) return t.css("left", -l), !1
+                        })
+                    }
+                }
+            }() : n.each(function(e, i) {
+                var n = $(i),
+                    o = n.position().left;
+                if(o + n.outerWidth() >= l - s) return t.css("left", -o), !1
+            })
+        }
+
+        $('#admin_top_menu').mousemove(function(e){
+            $(this).find('dl').slideDown(200);
+        });
+
+        $('#admin_top_menu').mouseleave(function(){
+            $(this).find('dl').slideUp(100);
+        })
+
+    })
+</script>

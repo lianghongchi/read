@@ -1,0 +1,117 @@
+{[include file="../../../common/header.html"]}
+<div id="app">
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <p></p>
+        </div>
+    </div>
+
+    <table class="layui-table">
+        <tbody>
+        <colgroup>
+            <col width="150">
+            <col>
+        </colgroup>
+        <tr>
+            <td align="right">id</td>
+            <td>{[$enter['id']]}</td>
+        </tr>
+        <tr>
+            <td align="right">用户id</td>
+            <td>{[$enter['uid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备id</td>
+            <td>{[$enter['mid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">游戏ID</td>
+            <td>{[$enter['gid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时的渠道id</td>
+            <td>{[$enter['chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时的子渠道id</td>
+            <td>{[$enter['sub_chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备ip地址</td>
+            <td>{[$enter['ip']]}</td>
+        </tr>
+        <tr>
+            <td align="right">机型</td>
+            <td>{[$enter['device_type']]}</td>
+        </tr>
+        <tr>
+            <td align="right">添加时间</td>
+            <td>{[$enter['add_time']]}</td>
+        </tr>
+        <tr>
+            <td align="right">mid注册来源</td>
+            <td>{[$enter['mid_reg_chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">mid注册日期</td>
+            <td>{[$enter['mid_reg_day']]}</td>
+        </tr>
+        <tr>
+            <td align="right">os</td>
+            <td>{[$enter['os']]}</td>
+        </tr>
+        <tr>
+            <td align="right">os-version</td>
+            <td>{[$enter['osver']]}</td>
+        </tr>
+        <tr>
+            <td align="right">idfa</td>
+            <td>{[$enter['idfa']]}</td>
+        </tr>
+        <tr>
+            <td align="right">屏幕分辨率</td>
+            <td>{[$enter['screenpx']]}</td>
+        </tr>
+        <tr>
+            <td align="right">网络类型</td>
+            <td>{[$enter['net_type']]}</td>
+        </tr>
+        <tr>
+            <td align="right">sdk版本号</td>
+            <td>{[$enter['sdk_version']]}</td>
+        </tr>
+        <tr>
+            <td align="right">区服id</td>
+            <td>{[$enter['sid']]}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            form.render();
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+</script>

@@ -1,0 +1,240 @@
+{[include file="../../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form list-tooltar-search" action="?" method="get">
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline">
+                        <select name="key">
+                            <option value="uid" selected="">用户uid</option>
+                            <option value="username">用户名</option>
+                            <option value="mobile">手机号</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="search" lay-verify="title" autocomplete="off" placeholder="请输入搜索内容" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-sm " lay-submit="submit-form" lay-filter="submit-form"><i class="layui-icon layui-icon-search"></i>搜索</button>
+
+            </div>
+        </div>
+    </form>
+    <div class="layui-card">
+        <div class="layui-card-header">账号信息</div>
+        <div class="layui-card-body layui-text" id="zero">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="100">
+                    <col>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td align="center">暂无查询</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-card-body layui-text" style="display:none;" id="info">
+            <form class="layui-form list-tooltar-search" action="?" method="get">
+
+                <table class="layui-table">
+                    <button class="layui-btn layui-btn-sm" id="edit-username"><i class="layui-icon layui-icon-username"></i> 修改用户名</button>
+                    <button class="layui-btn layui-btn-sm" id="edit-mobile"><i class="layui-icon layui-icon-cellphone"></i> 修改手机号</button>
+                    <button class="layui-btn layui-btn-sm" id="edit-password"><i class="layui-icon layui-icon-vercode"></i> 修改密码</button>
+                    <tbody>
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <tr>
+                            <td align="right">账号ID</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户名</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户邮箱</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户手机号</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户类型</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户昵称</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户头像</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户注册ip</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户性别</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户真实姓名</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户二代身份证号</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户注册渠道</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户注册日期</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="right">用户注册使用设备mid</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+    var table = layui.table;
+
+    var eventCatUrl = "{[$_baseUrl]}/user/info/account/cat";
+
+    var eventEdNameUrl= "{[$_baseUrl]}/user/info/accountpost/editusername";
+    var eventEdMobileUrl= "{[$_baseUrl]}/user/info/accountpost/editmobile";
+    var eventEdPasswordUrl= "{[$_baseUrl]}/user/info/accountpost/editpassword";
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            form.render();
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+    // 渲染表单主键样式
+    form.render();
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 68+$('.list-tooltar-search').height();
+    }
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+        $.ajax({
+            url:eventCatUrl,
+            type:'post',
+            data:{key:data.field.key,search:data.field.search},
+            success:function(data){
+                var json = eval('(' + data + ')');
+                var info = $('#info');
+                var zero = $('#zero');
+                if($.isEmptyObject(json)){
+                    zero.show();
+                    info.hide();
+                }else{
+                    zero.hide();
+                    info.show();
+                    $('#edit-username').attr('userid',json.uid);
+                    $('#edit-mobile').attr('userid',json.uid);
+                    $('#edit-password').attr('userid',json.uid);
+                    info.find('td').eq(1).text(json.uid);
+                    info.find('td').eq(3).html(json.username);
+                    info.find('td').eq(5).html(json.email);
+                    info.find('td').eq(7).html(json.mobile);
+                    var type = '未知';
+                    switch (json.type) {
+                        case 1:
+                            type = '用户名注册';
+                            break;
+                        case 2:
+                            type = '邮箱注册';
+                            break;
+                        case 3:
+                            type = '手机注册';
+                            break;
+                        case 4:
+                            type = '第三方注册';
+                            break;
+                    }
+                    info.find('td').eq(9).html(type);
+                    info.find('td').eq(11).html(json.nickname);
+                    info.find('td').eq(13).html("<img src='"+json.headimage+"' style='width:100px;height:100px;border-radius:5px;' />");
+                    info.find('td').eq(15).html(json.ip);
+                    info.find('td').eq(17).html(json.sex==0?'女':'男');
+                    info.find('td').eq(19).html(json.name);
+                    info.find('td').eq(21).html(json.id_number);
+                    info.find('td').eq(23).html(json.from);
+                    info.find('td').eq(25).html(json.add_time);
+                    info.find('td').eq(27).html(json.mid);
+                    form.render();
+                }
+            },
+            complete: function () {
+            },
+        });
+        return false;
+    });
+    $('#edit-username').click(function(){
+        var uid = $(this).attr('userid');
+        var EdNameUrl = eventEdNameUrl +'?uid='+uid;
+        openWindow(EdNameUrl,'修改用户名',['700px','500px'])
+        return false;
+    });
+
+    $('#edit-mobile').click(function(){
+        var uid = $(this).attr('userid');
+        var EdMobileUrl = eventEdMobileUrl +'?uid='+uid;
+        openWindow(EdMobileUrl,'修改手机号',['700px','500px'])
+        return false;
+    });
+
+    $('#edit-password').click(function(){
+        var uid = $(this).attr('userid');
+        var EdPassword = eventEdPasswordUrl +'?uid='+uid;
+        openWindow(EdPassword,'修改密码',['700px','500px'])
+        return false;
+    });
+</script>

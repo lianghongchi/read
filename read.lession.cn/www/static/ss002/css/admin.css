@@ -1,0 +1,113 @@
+/**
+ * 全局样式
+ */
+
+[v-cloak] {
+    display: none !important;
+}
+
+body {
+    background-color: #FFFFFF;
+    color: #313131;
+    min-width: 320px;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+.headline {
+    color: #333;
+    letter-spacing: 1px;
+    font-size: 15px;
+    font-weight: bold;
+    padding-left: 15px;
+    background-color: #F6F6F6;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.flush-a {
+    position: absolute;
+    right: 15px;
+    font-size: 14px;
+}
+
+.flush-a span{
+    font-size: 12px;
+    position: relative;
+    top: -2px;
+}
+
+.layadmin-header {
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 0;
+    border-radius: 0;
+    margin-bottom: 15px;
+}
+
+.layui-form .layui-form-checkbox{
+    margin: 3px 10px 3px 0px;
+}
+
+/** 菜单按钮 **/
+
+.layui-btn-dropdown {
+    position: relative;
+    display: inline-block
+}
+
+.layui-btn-dropdown .dropdown-icon{
+    font-size: 14px;
+}
+
+.layui-btn-dropdown .layui-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    float: left;
+    margin-left: -1px;
+    display: none;
+    padding: 0px 0;
+    min-width: 120px;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    background-color: #fff;
+    background-clip: padding-box;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    list-style: none;
+    text-align: left;
+    font-size: .875rem;
+    -webkit-background-clip: padding-box
+}
+
+.layui-btn-dropdown .layui-dropdown-menu>li>a {
+    clear: both;
+    display: block;
+    padding: 3px 15px;
+    color: #333;
+    white-space: nowrap;
+    font-weight: 400;
+    line-height: 1.42857143
+}
+
+.layui-btn-dropdown .layui-dropdown-menu>li>a:focus,
+.layui-btn-dropdown .layui-dropdown-menu>li>a:hover {
+    background-color: #f0f0f0;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.layui-btn-dropdown .layui-dropdown-menu .hr {
+    overflow: hidden;
+    margin: 0px 0;
+    height: 1px;
+    background-color: #e5e5e5
+}
+
+.layui-static-table{
+    display: none;
+}

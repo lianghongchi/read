@@ -1,0 +1,185 @@
+{[include file="../../common/header.html"]}
+
+<!--按钮区:-->
+<div>
+    <a href="javascript:history.back(-1);" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe603;</i> 返回</a>
+</div>
+<!--按钮区-->
+<hr />
+
+<blockquote class="layui-elem-quote">表单组合演示</blockquote>
+<br>
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form form-post-table" action="" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">纯文字行</label>
+            <div class="layui-input-inline layui-noinput">不带任何 input 的一行</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">占满整行的输入框</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="checkNick" placeholder="请输入用户昵称" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">辅助说明文字，带自定义验证</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">行内输入框</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">辅助说明文字2</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">下拉选择框演示</label>
+            <div class="layui-input-block" style="width:350px;">
+                <select name="city" lay-verify="required">
+                    <option value=""></option>
+                    {[foreach $cityList as $key => $value]}
+                    <option value="{[$key]}">{[$value]}</option>
+                    {[/foreach]}
+                </select>
+                <div class="layui-form-mid layui-word-aux">自定义组件的长度(190px)</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="password" id="selectDate" required lay-verify="required" placeholder="选择日期" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">辅助说明文字3</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">选择时间段</label>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <input type="text" name="time_start" placeholder="开始时间" autocomplete="off" class="layui-input" id="selectTime1">
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <input type="text" name="time_end" placeholder="结束时间" autocomplete="off" class="layui-input" id="selectTime2">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">范围</label>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择颜色</label>
+            <div class="layui-input-inline">
+                <div id="selectColor"></div>
+                <div class="layui-word-aux">选择颜色辅助说明文字</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">标签</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="like[kl]" title="开朗" checked>
+                <input type="checkbox" name="like[nx]" title="内向">
+                <input type="checkbox" name="like[wz]" title="稳重">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开关</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="switch" lay-skin="switch" lay-text="开启|关闭">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">单选框</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男">
+                <input type="radio" name="sex" value="女" title="女" checked>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">文本域</label>
+            <div class="layui-input-block">
+                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+
+    form.render();
+
+    // 表单验证
+    form.verify({
+        checkNick: function(value) {
+            if (value.length < 6 || value.length > 16) {
+                return '昵称长度为6-16位';
+            }
+        }
+    });
+
+    // 激活时间选择器
+    laydate.render({
+        elem: '#selectDate',
+    });
+    laydate.render({
+        elem: '#selectTime1',
+        type: 'datetime'
+    });
+    laydate.render({
+        elem: '#selectTime2',
+        type: 'datetime'
+    });
+    // 颜色选择器
+    colorpicker.render({
+        elem: '#selectColor',
+        done: function(data) {
+            tos('选择的颜色：' + data);
+        }
+    });
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+
+        // 调试打印信息
+        // layer.alert(JSON.stringify(data.field), {
+        //     title: '最终的提交信息'
+        // });
+
+        // 发起ajax请求
+        formRequest('?', 'post', data.field, function() {
+            // 显示loading 并刷新当前页面
+            showLoading();
+            location.reload();
+        });
+
+        return false;
+    });
+</script>

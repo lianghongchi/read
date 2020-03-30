@@ -1,0 +1,240 @@
+{[include file="../../common/header.html"]}
+
+<form class="layui-form list-tooltar-search" action="?" method="get">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <label>用户ID</label>
+            <div class="layui-input-inline">
+                <input type="text" name="uid" value="{[$uid]}" placeholder="输入用户ID" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-input-inline">
+            <label>注册时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="add_time1" value="{[$addTime1]}" placeholder="起始时间" autocomplete="off" class="layui-input" id="add_time1">
+            </div>
+            <label>-</label>
+            <div class="layui-input-inline">
+                <input type="text" name="add_time2" value="{[$addTime2]}" placeholder="结束时间" autocomplete="off" class="layui-input" id="add_time2">
+            </div>
+        </div>
+        <div class="layui-input-inline">
+            <label>状态</label>
+            <div class="layui-input-inline">
+                <select name="status" lay-verify="">
+                    <option value="" {[if $status == '']}selected{[/if]}>全部</option>
+                    {[foreach $statusList as $key => $val]}
+                    <option value="{[$key]}" {[if $status == $key]}selected{[/if]}>{[$val]}</option>
+                    {[/foreach]}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-sm _loading_page" lay-submit=""><i class="layui-icon layui-icon-search"></i>搜索</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/html" id="topToolbar">
+    <div class="layui-btn-container">
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="detail"><i class="layui-icon layui-icon-form"></i>查看详情</a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-template-1"></i>表单模板</a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="add2">
+            <i class="layui-icon layui-icon-add-circle"></i>测试表单提交（弹出层 + vue混合开发）
+        </a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="delete" style="background-color: orange;">
+            <i class="layui-icon layui-icon-delete"></i>删除
+        </a>
+    </div>
+</script>
+
+<table class="layui-static-table" lay-filter="table_data" lay-size="">
+    <thead>
+    <tr>
+        <th lay-data="{field:'key', type: 'radio'}">选择</th>
+        <th lay-data="{field:'uid', width:90, sort:true, totalRows: true }">用户ID</th>
+        <th lay-data="{field:'avatar'}">头像</th>
+        <th lay-data="{field:'user_nick'}">用户昵称</th>
+        <th lay-data="{field:'sex', width:60}">性别</th>
+        <th lay-data="{field:'cellphone', width:120}">手机号码</th>
+        <th lay-data="{field:'country'}">国家</th>
+        <th lay-data="{field:'province'}">省</th>
+        <th lay-data="{field:'city'}">城市</th>
+        <th lay-data="{field:'is_locked', width: 90}">是否锁定</th>
+        <th lay-data="{field:'status_text'}">状态</th>
+        <th lay-data="{field:'add_time', width:160}">注册时间</th>
+    </tr>
+    </thead>
+    <tbody>
+        {[foreach $data as $key => $val]}
+        <tr>
+            <td>{[$key]}</td>
+            <td>{[$val.uid]}</td>
+            <td><img src="/static/ss002/images/common/avatar_default.png" height="30" alt=""></td>
+            <td>{[$val.user_nick]}</td>
+            <td>{[if $val.sex == 1]}男{[else]}女{[/if]}</td>
+            <td>{[$val.cellphone]}</td>
+            <td>{[$val.country]}</td>
+            <td>{[$val.province]}</td>
+            <td>{[$val.city]}</td>
+            <td>{[if $val.is_locked == 1]}已锁定{[else]}否{[/if]}</td>
+            <td>
+                <span
+                    {[if $val.status == '-1']}
+                    style="color:orange"
+                    {[/if]}
+                    >
+                {[$val.status_text]}
+                </span>
+            </td>
+            <td>{[$val.add_time_text]}</td>
+        </tr>
+        {[/foreach]}
+    </tbody>
+</table>
+
+{[include file="../../common/page.html"]}
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+
+    // 用户详情url地址
+    var eventDetailUrl = "{[$_baseUrl]}/develop/template/detail";
+    // 添加数据模板
+    var eventAddUrl = "{[$_baseUrl]}/develop/template/add";
+    // 添加数据模板 2
+    var eventAdd2Url = "{[$_baseUrl]}/develop/template/add2";
+    var eventEditUrl = "{[$_baseUrl]}/develop/template/edit";
+    var eventDeleteUrl = "{[$_baseUrl]}/develop/template/delete";
+
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+
+    // 渲染表单主键样式
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#add_time1',
+    });
+    laydate.render({
+        elem: '#add_time2',
+    });
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 68+$('.list-tooltar-search').height();
+    }
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+
+    // 监听行工具事件
+    table.on('toolbar(table_data)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        // 调试打印事件
+        d(checkStatus);
+        // 调试打印选中的数据， 使用 . 可获取选中数据的属性值
+        d(checkStatus.data[0]);
+
+        // 判断事件
+        switch (obj.event) {
+            // 显示用户详情事件
+            case 'detail':
+                eventDetail(checkStatus);
+                break;
+            // 表单模板
+            case 'add':
+                eventAdd();
+                break;
+            // 表单模板2，弹出层+vue混开
+            case 'add2':
+                eventAdd2();
+                break;
+            // 编辑数据
+            case 'edit':
+                eventEdit(checkStatus);
+                break;
+            // 删除数据
+            case 'delete':
+                eventDelete(checkStatus);
+                break;
+        }
+    });
+
+    function eventDetail(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var detailUrl = eventDetailUrl + '?uid=' + checkStatus.data[0].uid;
+
+        /**
+         * 打开弹层新窗口
+         * @param  {string} url 窗口URL地址
+         * @param  {string} info 窗口顶部标题
+         * @param  {string} area 窗口大小，(min 小窗口，med 中型窗口，max 大窗口，ra 固定比例的大窗口(页面的80%)，自定义窗口大小=>格式：["1000px", "500px"]，默认max)
+         */
+         openWindow(detailUrl, '用户详情', 'max');
+    }
+    // 表单模板
+    function eventAdd() {
+        redirect(eventAddUrl);
+    }
+    // 添加数据
+    function eventAdd2() {
+        /**
+         * 打开弹层新窗口，有3个参数
+         * @param  {string} url 窗口URL地址
+         * @param  {string} info 窗口顶部标题
+         * @param  {string} area 窗口大小，可选，(min 小窗口，med 中型窗口，max 大窗口，ra 固定比例的大窗口(页面的80%)，自定义窗口大小=>格式：["1000px", "500px"]，默认max)
+         */
+        openWindow(eventAdd2Url, '表单提交模板');
+    }
+
+    // 编辑
+    function eventEdit(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var editUrl = eventEditUrl + '?uid=' + checkStatus.data[0].uid;
+        // 自定义窗口大小
+        //alert(editUrl);
+        openWindow(editUrl, '编辑用户', ['800px', '400px']);
+    }
+
+    // 删除
+    function eventDelete(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var uid = checkStatus.data[0].uid;
+        // 弹出删除确认框
+        confirmMessage('用户ID：'+uid+'，确认删除此条数据吗？', function(){
+            // 显示loading，防止重复提交
+            showLoading('正在删除..');
+            simpleRequest(eventDeleteUrl, 'post', {uid: uid}, function(code, msg, redata){
+                // 隐藏loading
+                hideLoading();
+                // 非200 显示错误提示
+                if (code != 200) {
+                    return errorMessage(msg);
+                }
+                // 删除成功
+                return successMessage(msg, function (){
+                    // 删除成功后  显示loading，重新加载此页面
+                    showLoading();
+                    reloadPage();
+                });
+            });
+        });
+    }
+
+</script>

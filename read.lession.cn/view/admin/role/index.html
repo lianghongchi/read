@@ -1,0 +1,177 @@
+{[include file="../../common/header.html"]}
+
+<form class="layui-form list-tooltar-search" action="?" method="get">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <label>分组名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" value="{[$name]}" placeholder="支持模糊搜索" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-sm _loading_page" lay-submit=""><i class="layui-icon layui-icon-search"></i>搜索</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/html" id="topToolbar">
+    <div class="layui-btn-container">
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="add">
+            <i class="layui-icon layui-icon-add-circle"></i>添加权限分组
+        </a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="delete" style="background-color: orange;">
+            <i class="layui-icon layui-icon-delete"></i>删除
+        </a>
+    </div>
+</script>
+
+<table class="layui-static-table" lay-filter="table_data" lay-size="">
+    <thead>
+    <tr>
+        <th lay-data="{field:'key', type: 'radio'}">选择</th>
+        <th lay-data="{field:'role_id', width:100, sort:true}">分组ID</th>
+        <th lay-data="{field:'name'}">分组名称</th>
+        <th lay-data="{field:'add_time_text', sort:true}">添加时间</th>
+        <th lay-data="{field:'auth_list'}">权限列表</th>
+    </tr>
+    </thead>
+    <tbody>
+    {[foreach $data as $key => $val]}
+    <tr>
+        <td>{[$key]}</td>
+        <td>{[$val.role_id]}</td>
+        <td>{[$val.name]}</td>
+        <td>{[$val.add_time_text]}</td>
+        <td>{[if $val.auth_list]}
+            <button class="layui-btn layui-btn-xs query_auth_list"
+                    auth_list="{[foreach $val.auth_list as $k=>$v]}{[$v.auth_name]}<br>{[/foreach]}" auth_name="{[$val.name]}">查看</button>{[else]}未设置{[/if]}</td>
+    </tr>
+    {[/foreach]}
+    </tbody>
+</table>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+
+    // 添加数据
+    var eventAddUrl = "{[$_baseUrl]}/admin/rolepost/add";
+    // 编辑
+    var eventEditUrl = "{[$_baseUrl]}/admin/rolepost/edit";
+    // 删除
+    var eventDeleteUrl = "{[$_baseUrl]}/admin/rolepost/delete";
+
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+
+    // 渲染表单主键样式
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#add_time1',
+    });
+    laydate.render({
+        elem: '#add_time2',
+    });
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 30+$('.list-tooltar-search').height();
+    }
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+
+    // 监听行工具事件
+    table.on('toolbar(table_data)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        // 调试打印事件
+        d(checkStatus);
+        // 调试打印选中的数据， 使用 . 可获取选中数据的属性值
+        d(checkStatus.data[0]);
+
+        // 判断事件
+        switch (obj.event) {
+            // 表单模板
+            case 'add':
+                eventAdd();
+                break;
+            // 编辑数据
+            case 'edit':
+                eventEdit(checkStatus);
+                break;
+            // 删除数据
+            case 'delete':
+                eventDelete(checkStatus);
+                break;
+        }
+    });
+
+    // 添加数据
+    function eventAdd() {
+        /**
+         * 打开弹层新窗口，有3个参数
+         * @param  {string} url 窗口URL地址
+         * @param  {string} info 窗口顶部标题
+         * @param  {string} area 窗口大小，可选，(min 小窗口，med 中型窗口，max 大窗口，ra 固定比例的大窗口(页面的80%)，自定义窗口大小=>格式：["1000px", "500px"]，默认max)
+         */
+        openWindow(eventAddUrl, '分组权限名称', ['1200px', '700px']);
+    }
+
+    // 编辑
+    function eventEdit(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var editUrl = eventEditUrl + '?role_id=' + checkStatus.data[0].role_id;
+        // 自定义窗口大小
+        openWindow(editUrl, '编辑分组', ['1200px', '700px']);
+    }
+
+    // 删除
+    function eventDelete(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var roleid = checkStatus.data[0].role_id;
+        var roleName = checkStatus.data[0].name;
+
+        // 弹出删除确认框
+        confirmMessage('['+roleName+'] 删除后拥有此分组的管理员将不能使用对应的功能<br>确认删除此权限分组吗？', function(){
+            // 显示loading，防止重复提交
+            showLoading('正在删除..');
+            simpleRequest(eventDeleteUrl, 'post', {role_id: roleid}, function(code, msg, redata){
+                // 隐藏loading
+                hideLoading();
+                // 非200 显示错误提示
+                if (code != 200) {
+                    return errorMessage(msg);
+                }
+                // 删除成功
+                return successMessage(msg, function (){
+                    // 删除成功后  显示loading，重新加载此页面
+                    showLoading();
+                    reloadPage();
+                });
+            });
+        });
+    }
+
+    $("body").on('click', '.query_auth_list', function() {
+        var authList = $(this).attr('auth_list');
+        var authName = $(this).attr('auth_name');
+        layer.alert(authList, {
+            title: '['+authName+'] 拥有的权限',
+            area: ['300px', '300px']
+        });
+    })
+
+</script>

@@ -1,0 +1,118 @@
+{[include file="../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form form-post-table" action="" method="post">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_name" required lay-verify="required" placeholder="请输入用户名" maxlength="16" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">管理员用户名称，可用于登录账号，2-16位，只能输入字母或数字</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" required lay-verify="required" maxlength="10" placeholder="请输入真实姓名" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">管理员真实姓名</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">职位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_title" maxlength="15" placeholder="管理员职位" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">选填项，2-15个字符</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="cellphone" required lay-verify="required" maxlength="11" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">管理员手机号码</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="required" maxlength="16" placeholder="请设置登录密码" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">设置登录密码，6-16位非空字符</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">开启下级管理权限</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="is_sub_manager" lay-skin="switch" value="1" lay-text="开启|关闭">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">开启GA登录</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="is_login_ga" lay-skin="switch" value="1" lay-text="开启|关闭">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择权限组</label>
+            <div class="layui-input-inline" style="width:75%;">
+                    <div style="width:33%;float:left;margin-bottom:15px;" v-for="(item, index) in roleList" >
+                        <input type="checkbox" name="role[]" :title="item.name" :value="item.role_id" lay-skin="primary" >
+                    </div>
+                    <div style="clear:both;"></div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+
+    var roleList = {[json_encode($roleList)]};
+
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            roleList: roleList,
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            form.render();
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+
+        // 发起ajax请求
+        formRequest('?', 'post', data.field, function() {
+            // 显示loading 并刷新当前页面
+            showLoading();
+            parent.location.reload();
+        });
+
+        return false;
+    });
+</script>

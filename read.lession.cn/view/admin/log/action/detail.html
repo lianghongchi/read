@@ -1,0 +1,65 @@
+{[include file="../../../common/header.html"]}
+
+<table class="layui-table form-post-table" lay-size="lg">
+    <colgroup>
+        <col width="250">
+        <col>
+    </colgroup>
+
+    <tbody>
+    <tr>
+        <td class="layui-table-tdr">管理员ID</td>
+        <td>{[$data.admin_id]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">操作控制器</td>
+        <td>{[$data.controller]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">操作名称</td>
+        <td>{[$data.action]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">url</td>
+        <td>{[$data.url]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">请求方法</td>
+        <td>{[$data.method]}</td>
+    </tr>
+
+    <tr>
+        <td class="layui-table-tdr">请求数据</td>
+        <td>{[$data.request]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">ip</td>
+        <td>{[$data.ip]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">agent</td>
+        <td>{[$data.agent]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">操作结果</td>
+        <td>{[$data.result]}</td>
+    </tr>
+    <tr>
+        <td class="layui-table-tdr">添加时间</td>
+        <td>{[date('Y-m-d H:i:s', $data.add_time)]}</td>
+    </tr>
+    </tbody>
+
+</table>
+
+
+
+<script type="text/javascript">
+
+    var layer = layui.layer;
+
+
+</script>
+
+
+{[include file="../../../common/footer.html"]}

@@ -1,0 +1,21 @@
+{[if isset($_page) && $_page]}
+<!--分页-->
+<script type="text/javascript" src="{[get_static_res_url('admin')]}/js/kkpager/kkpager.js"></script>
+<link rel="stylesheet" type="text/css" href="{[get_static_res_url('admin')]}/js/kkpager/kkpager.css" />
+<div id="kkpager"></div>
+<script type="text/javascript">
+    kkpager.generPageHtml({
+        pno : {[$_page.num]},
+        total : {[$_page.totalPage]},
+        totalRecords : {[$_page.totalCount]},
+        getLink : function(n){
+            var url = kkpager.updateUrl(window.location.href, 'page', n);
+            return url;
+            //return this.hrefFormer + this.hrefLatter + "?page="+n;
+        }
+    });
+</script>
+{[/if]}
+
+
+

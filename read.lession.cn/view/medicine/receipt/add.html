@@ -1,0 +1,76 @@
+{[include file="../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form form-post-table" action="" method="post">
+        <div class="layui-inline">
+            <div class="layui-form-item">
+                <label class="layui-form-label">进货时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="receiptTime" name="receiptTime" autocomplete="off" placeholder="进货时间" class="layui-input">
+                    <div class="layui-form-mid layui-word-aux">进货时间</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">药品名称</label>
+                <div class="layui-input-block" style="width:350px;">
+                    <select name="inventId" lay-filter='inventId'>
+                        <option value=""></option>
+                        {[foreach $invent as $key => $value]}
+                        <option value="{[$value['inventId']]}">{[$value['together']]}</option>
+                        {[/foreach]}
+                    </select>
+                    <div class="layui-form-mid layui-word-aux">选择药品名称</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">进货数量</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="receiptCount" required lay-verify="required" placeholder="进货数量" maxlength="16" autocomplete="off" class="layui-input">
+                    <div class="layui-form-mid layui-word-aux">进货数量</div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">进货单价</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="receiptPrice" required lay-verify="required" placeholder="进货单价" maxlength="16" autocomplete="off" class="layui-input">
+                    <div class="layui-form-mid layui-word-aux">进货单价</div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                    <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#receiptTime',
+    });
+    laydate.render({
+        elem: '#begin_time',
+    });
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+        // 发起ajax请求
+        formRequest('?', 'post', data.field, function() {
+            // 显示loading 并刷新当前页面
+            showLoading();
+            parent.location.reload();
+        });
+
+        return false;
+    });
+</script>

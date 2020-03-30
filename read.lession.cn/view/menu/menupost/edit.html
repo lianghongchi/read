@@ -1,0 +1,146 @@
+{[include file="../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form form-post-table" action="" method="post">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" lay-verify="required" value="{[$data.title]}" placeholder="请输入菜单名称" maxlength="16" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">菜单名称</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Icon</label>
+            <div class="layui-input-inline">
+                <input type="text" name="icon"  maxlength="" value="{[$data.icon]}" placeholder="请输入icon" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">leyui icon</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Controller</label>
+            <div class="layui-input-inline">
+                <input type="text" name="controller"  maxlength="" value="{[$data.controller]}" placeholder="请输入Controller" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">Controller 例: test_list_controller 填入 test_list</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Action</label>
+            <div class="layui-input-inline">
+                <input type="text" name="action" maxlength="15" value="{[$data.action]}" placeholder="请输入Action" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">Action 例: test_action 填入 test</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">一级菜单</label>
+            <div class="layui-input-block" style="width:350px;">
+                <select name="pid" lay-filter='pid'>
+                    <option value=""></option>
+                    {[foreach $levelOneMenu as $key => $value]}
+                        <option value="{[$value.id]}" {[if $levelOneId == $value.id ]} selected {[/if]} >{[$value.title]}</option>
+                    {[/foreach]}
+                </select>
+                <div class="layui-form-mid layui-word-aux">选择一级菜单 不选择默认添加的此菜单为一级菜单</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">二级菜单</label>
+            <div class="layui-input-block" style="width:350px;">
+                <select name="spid" id='child'>
+                    <option value=""></option>
+                    {[foreach $levelTwoMenu as $key => $value]}
+                        <option value="{[$value.id]}" {[if $levelTwoId == $value.id]}selected{[/if]}>{[$value.title]}</option>
+                    {[/foreach]}
+                </select>
+                <div class="layui-form-mid layui-word-aux">选择二级菜单 不选择默认添加的此菜单为选择一级菜单的二级菜单</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Sort</label>
+            <div class="layui-input-inline">
+                <input type="number" name="sort" value="{[$data.sort]}" lay-verify="required" maxlength="2" placeholder="请输入Sort" autocomplete="off" class="layui-input">
+                <input type="hidden" name="id" value="{[$data.id]}">
+                <div class="layui-form-mid layui-word-aux">权重值 值越大权重越大 1-10</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+    var getReMenuUrl = "{[$_baseUrl]}/menu/menupost/getReMenu";
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            form.render();
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+        confirmMessage('确认修改此条数据吗？', function() {
+            // 发起ajax请求
+            formRequest('?', 'post', data.field, function () {
+                // 显示loading 并刷新当前页面
+                showLoading();
+                parent.location.reload();
+            });
+            return false;
+        });
+        return false;
+    });
+
+    //选择游戏时监听
+    form.on('select(pid)',function(data){
+        //判断选择值
+        if(data.value == ''){
+            infoFlag = false;
+            infoValue = '';
+            var str ='<option value=""></option>';
+            $('#child').html(str);
+            form.render();
+        }else{
+            var pid = data.value;
+            //后台获取马甲包数据
+            $.ajax({
+                url:getReMenuUrl,
+                type:'post',
+                data:{pid:pid},
+                success:function(dataL){
+                    //渲染数据
+                    var str ='<option value=""></option>';
+                    $.each(dataL.data.menuList,function(index,val){
+                        str+='<option value="'+val.id+'">'+val.title+'</option>';
+                    });
+                    $('#child').html(str);
+                    //表单重构
+                    form.render();
+                },
+                error:function(){
+                }
+            });
+        }
+    })
+</script>

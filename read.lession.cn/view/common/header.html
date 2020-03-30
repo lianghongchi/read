@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lession</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Cache-Control" content="no-store">
+    <link href="{[$_resource.admin_static]}/layui_v2/css/layui.css" rel="stylesheet">
+    <script type="text/javascript" src="{[$_resource.admin_static]}/js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="{[$_resource.admin_static]}/layui_v2/layui.all.js"></script>
+
+    {[if is_dev()]}
+    <script type="text/javascript" src="{[$_resource.admin_static]}/js/vue/vue.js"></script>
+    {[else]}
+    <script type="text/javascript" src="{[$_resource.admin_static]}/js/vue/vue.min.js"></script>
+    {[/if]}
+
+    <link rel="stylesheet" type="text/css" href="{[$_resource.admin_static]}/css/admin.css" />
+    <script type="text/javascript" src="{[$_resource.admin_static]}/js/common.js"></script>
+    <script type="text/javascript" src="{[$_resource.admin_static]}/js/admin.js"></script>
+
+    <style type="text/css">
+        /**
+         * 自定义layui 样式
+         */
+
+        [v-cloak] {
+            display: none;
+        }
+
+        /**
+         * 所有输入框、选择框、textarea 高度定为32px
+         */
+        .layui-input, .layui-select, .layui-textarea{
+            height: 32px;
+        }
+        .list-tooltar-search{
+            padding: 3px 15px;
+            background-color: #F2F2F2;
+            border: 1px #e6e6e6 solid;
+            border-bottom: none;
+        }
+        .list-tooltar-search .layui-input-inline{
+            margin: 2px 5px 2px 0;
+        }
+        .layui-table, .layui-table-view{
+            margin: 0px;
+        }
+        .list-tooltar-search .layui-input{
+            width: 130px;
+        }
+        .layui-table-click{
+            background-color: #F3F7F9;
+        }
+        .layui-table-hover{
+            background-color: #F3F7F9 !important;
+        }
+        .layui-table-tdr{
+            text-align: right;
+            padding-right: 0px;
+        }
+
+        .layadmin-header{
+            margin-bottom: 0px;
+        }
+        .layui-form-item .layui-input-inline{
+            width: 350px;
+        }
+        .layui-input-block{
+            margin-left: 190px;
+        }
+        .layui-form-label{
+            width: 170px;
+            padding: 5px 20px 10px 0;
+        }
+        .layui-form-switch{
+            height: 20px;
+            min-width:32px;
+            line-height: 20px;
+            margin-top: 6px;
+        }
+        .layui-form-switch i{
+            top: 3px;
+            width: 14px;
+            height: 14px;
+        }
+        .layui-form-onswitch i {
+            margin-left: -18px;
+        }
+        .layui-form-onswitch em{
+            margin-left: 2px;
+            margin-right: 19px;
+        }
+        .form-post-table{
+            margin-top: 20px;
+        }
+        .layui-noinput{
+            height:30px;line-height: 30px
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    {[if !empty($headline)]}
+    <div class="layui-card layadmin-header">
+        <div class="headline">{[$headline]}
+            <a href="javascript:;" class="flush-a _page_reload"><i class="layui-icon layui-icon-refresh"></i><span> 刷新</span></a>
+        </div>
+    </div>
+    {[/if]}
+    <div class="layui-fluid" style="padding-top: 15px;">

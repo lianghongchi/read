@@ -1,0 +1,127 @@
+{[include file="../../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <p></p>
+        </div>
+    </div>
+
+    <table class="layui-table">
+        <tbody>
+        <colgroup>
+            <col width="150">
+            <col>
+        </colgroup>
+        <tr>
+            <td align="right">id</td>
+            <td>{[$login['id']]}</td>
+        </tr>
+        <tr>
+            <td align="right">用户id</td>
+            <td>{[$login['uid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">用户名</td>
+            <td>{[$login['username']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备id</td>
+            <td>{[$login['mid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">游戏ID</td>
+            <td>{[$login['gid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时的渠道id</td>
+            <td>{[$login['chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时的子渠道id</td>
+            <td>{[$login['sub_child']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备ip地址</td>
+            <td>{[$login['ip']]}</td>
+        </tr>
+        <tr>
+            <td align="right">机型</td>
+            <td>{[$login['device_type']]}</td>
+        </tr>
+        <tr>
+            <td align="right">uid注册渠道</td>
+            <td>{[$login['reg_chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">uid注册时间</td>
+            <td>{[$login['reg_time']]}</td>
+        </tr>
+        <tr>
+            <td align="right">添加时间</td>
+            <td>{[$login['add_time']]}</td>
+        </tr>
+        <tr>
+            <td align="right">mid注册来源</td>
+            <td>{[$login['mid_reg_chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">mid注册日期</td>
+            <td>{[$login['mid_reg_day']]}</td>
+        </tr>
+        <tr>
+            <td align="right">os</td>
+            <td>{[$login['os']]}</td>
+        </tr>
+        <tr>
+            <td align="right">os-version</td>
+            <td>{[$login['osver']]}</td>
+        </tr>
+        <tr>
+            <td align="right">idfa</td>
+            <td>{[$login['idfa']]}</td>
+        </tr>
+        <tr>
+            <td align="right">屏幕分辨率</td>
+            <td>{[$login['screenpx']]}</td>
+        </tr>
+        <tr>
+            <td align="right">网络类型</td>
+            <td>{[$login['net_type']]}</td>
+        </tr>
+        <tr>
+            <td align="right">sdk版本号</td>
+            <td>{[$login['sdk_version']]}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            form.render();
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+</script>

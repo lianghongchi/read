@@ -1,0 +1,180 @@
+{[include file="../../common/header.html"]}
+
+<form class="layui-form list-tooltar-search" action="?" method="get">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <label>姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" value="{[$name]}" placeholder="输入管理员姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-input-inline">
+            <label>手机号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="cellphone" value="{[$cellphone]}" placeholder="输入管理员手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-input-inline">
+            <label>添加时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="add_time1" value="{[$addTime1]}" placeholder="起始时间" autocomplete="off" class="layui-input" id="add_time1">
+            </div>
+            <label>-</label>
+            <div class="layui-input-inline">
+                <input type="text" name="add_time2" value="{[$addTime2]}" placeholder="结束时间" autocomplete="off" class="layui-input" id="add_time2">
+            </div>
+        </div>
+
+        <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-sm _loading_page" lay-submit=""><i class="layui-icon layui-icon-search"></i>搜索</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/html" id="topToolbar">
+    <div class="layui-btn-container">
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="add">
+            <i class="layui-icon layui-icon-add-circle"></i>添加管理员
+        </a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="queryKey"><i class="layui-icon layui-icon-vercode"></i>查看GA密钥</a>
+    </div>
+</script>
+
+<table class="layui-static-table" lay-filter="table_data" lay-size="">
+    <thead>
+    <tr>
+        <th lay-data="{field:'key', type: 'radio'}">选择</th>
+        <th lay-data="{field:'admin_id', sort:true }">管理员ID</th>
+        <th lay-data="{field:'p_admin_id'}">上级管理员ID</th>
+        <th lay-data="{field:'admin_name'}">用户名</th>
+        <th lay-data="{field:'name'}">姓名</th>
+        <th lay-data="{field:'cellphone', width:120}">手机号码</th>
+        <th lay-data="{field:'is_sub_manager_text'}">下级管理权限</th>
+        <th lay-data="{field:'is_super_text'}">是否超管</th>
+        <th lay-data="{field:'is_locked_text'}">是否被禁用</th>
+        <th lay-data="{field:'add_time_text', width:160, sort:true}">添加时间</th>
+        <th lay-data="{field:'auth_key', hide:true}">GA密钥</th>
+        <th lay-data="{field:'admin_title', hide:true}">职位</th>
+    </tr>
+    </thead>
+    <tbody>
+    {[foreach $data as $key => $val]}
+    <tr>
+        <td>{[$key]}</td>
+        <td>{[$val.admin_id]}</td>
+        <td>{[$val.p_admin_id]}</td>
+        <td>{[$val.admin_name]}</td>
+        <td>{[$val.name]}</td>
+        <td>{[$val.cellphone]}</td>
+        <td>{[if $val.is_sub_manager]}拥有{[else]}无{[/if]}</td>
+        <td>{[if $val.is_super]}<span style="color:orange">是</span>{[else]}否{[/if]}</td>
+        <td>{[if $val.is_locked == 1]}已禁用{[else]}否{[/if]}</td>
+        <td>{[$val.add_time_text]}</td>
+        <td>{[$val.auth_key]}</td>
+        <td>{[$val.admin_title]}</td>
+    </tr>
+    {[/foreach]}
+    </tbody>
+</table>
+
+{[include file="../../common/page.html"]}
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+
+    // 添加管理员
+    var eventAddUrl = "{[$_baseUrl]}/admin/adminpost/add";
+    // 修改管理员
+    var eventEditUrl = "{[$_baseUrl]}/admin/adminpost/edit";
+    //展示地址
+    var catGaUrl = "{[$_baseUrl]}/admin/adminpost/catga";
+
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+
+    // 渲染表单主键样式
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#add_time1',
+    });
+    laydate.render({
+        elem: '#add_time2',
+    });
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 68+$('.list-tooltar-search').height();
+    }
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+
+    // 监听行工具事件
+    table.on('toolbar(table_data)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        // 调试打印事件
+        d(checkStatus);
+        // 调试打印选中的数据， 使用 . 可获取选中数据的属性值
+        d(checkStatus.data[0]);
+
+        // 判断事件
+        switch (obj.event) {
+            // 表单模板
+            case 'add':
+                eventAdd();
+                break;
+            // 编辑数据
+            case 'edit':
+                eventEdit(checkStatus);
+                break;
+            case 'queryKey':
+                eventQueryKey(checkStatus);
+                break;
+        }
+    });
+
+    // 添加数据
+    function eventAdd() {
+        /**
+         * 打开弹层新窗口，有3个参数
+         * @param  {string} url 窗口URL地址
+         * @param  {string} info 窗口顶部标题
+         * @param  {string} area 窗口大小，可选，(min 小窗口，med 中型窗口，max 大窗口，ra 固定比例的大窗口(页面的80%)，自定义窗口大小=>格式：["1000px", "500px"]，默认max)
+         */
+        openWindow(eventAddUrl, '添加管理员信息');
+    }
+
+    // 编辑
+    function eventEdit(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var editUrl = eventEditUrl + '?admin_id=' + checkStatus.data[0].admin_id;
+        // 自定义窗口大小
+        //alert(editUrl);
+        openWindow(editUrl, '编辑管理员信息');
+    }
+
+    // 查看GA密钥
+    function eventQueryKey(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var authKey = checkStatus.data[0].auth_key;
+        if (!authKey || authKey == '') {
+            return tos('此管理员未开启GA登录');
+        }
+        var gaUrl = catGaUrl + '?ga=' + checkStatus.data[0].auth_key + '&admin_name='+ checkStatus.data[0].admin_name;
+        openWindow(gaUrl,'查看GA',['400px','400px']);
+    }
+
+</script>

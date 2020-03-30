@@ -1,0 +1,81 @@
+{[include file="../../../common/header.html"]}
+
+<table class="layui-static-table" lay-filter="table_data" lay-size="">
+    <thead>
+    <tr>
+        <th lay-data="{field:'key', type: 'radio'}">选择</th>
+        <th lay-data="{field:'uid', sort:true }">用户id</th>
+        <th lay-data="{field:'mid'}">设备id</th>
+        <th lay-data="{field:'gid'}">游戏id</th>
+        <th lay-data="{field:'sid'}">区服id</th>
+        <th lay-data="{field:'chid'}">渠道</th>
+        <th lay-data="{field:'sub_chid'}">子渠道</th>
+        <th lay-data="{field:'role'}">角色名</th>
+        <th lay-data="{field:'role_time'}">创号时间</th>
+        <th lay-data="{field:'is_first'}">首次创号</th>
+        <th lay-data="{field:'add_time'}">添加时间</th>
+        <th lay-data="{field:'max_level'}">最高等级</th>
+        <th lay-data="{field:'action'}">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {[foreach $role as $key => $val]}
+    <tr>
+        <td>{[$key]}</td>
+        <td>{[$val.uid]}</td>
+        <td>{[$val.mid]}</td>
+        <td>{[$val.gid]}</td>
+        <td>{[$val.sid]}</td>
+        <td>{[$val.chid]}</td>
+        <td>{[$val.sub_chid]}</td>
+        <td>{[$val.role]}</td>
+        <td>{[$val.role_time]}</td>
+        <td>{[if $val.is_first == 1]}是{[else]} 否 {[/if]}</td>
+        <td>{[$val.add_time]}</td>
+        <td>{[$val.max_level]}</td>
+        <td>
+            <a href="javascript:" class="layui-btn layui-btn-sm" onclick="catinfo({[$val.uid]})"><i class="layui-icon layui-icon-edit"></i>查看详情</a>
+        </td>
+    </tr>
+    {[/foreach]}
+    </tbody>
+</table>
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+    var url = "{[$_baseUrl]}/user/info/role/info";
+
+    // 渲染表单主键样式
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#add_time1',
+    });
+    laydate.render({
+        elem: '#add_time2',
+    });
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 68+$('.list-tooltar-search').height();
+    }
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+    
+    function catinfo(uid) {
+        var evenUrl = url+'?uid='+uid;
+        openWindow(evenUrl,'查看角色详情');
+    }
+
+
+
+</script>

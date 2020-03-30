@@ -1,0 +1,70 @@
+{[if !empty($_page)]}
+<div class="layui-table-page" style="border: 1px solid #e6e6e6; padding: 7px 0 0 0;height: 33px;">
+    <div id="layui-table-page1" style="padding: 0px 5px;">
+        <div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-5">
+            <span class="layui-laypage-limits">
+                <select lay-ignore="" id="_pageDataSize">
+                    <option value="30" {[if $_page.pageRows == 30]}selected{[/if]}>30 条/页</option>
+                    <option value="50" {[if $_page.pageRows == 50]}selected{[/if]}>50 条/页</option>
+                    <option value="100" {[if $_page.pageRows == 100]}selected{[/if]}>100 条/页</option>
+                    <option value="150" {[if $_page.pageRows == 150]}selected{[/if]}>150 条/页</option>
+                    <option value="200" {[if $_page.pageRows == 200]}selected{[/if]}>200 条/页</option>
+                </select>
+            </span>
+            {[if $_page.page == 1]}
+            <a href="javascript:;" class="layui-laypage-prev layui-disabled" >首页</a>
+            <a href="javascript:;" class="layui-laypage-prev layui-disabled" >上一页</a>
+            {[else]}
+            <a href="javascript:;" class="layui-laypage-prev _pageFisrt" >首页</a>
+            <a href="javascript:;" class="layui-laypage-prev _pagePre" >上一页</a>
+            {[/if]}
+
+            {[if isset($pageDataSize) && $pageDataSize < $_page.pageRows]}
+            <a href="javascript:;" class="layui-laypage-prev layui-disabled" >下一页</a>
+            {[else]}
+            <a href="javascript:;" class="layui-laypage-prev _pageNext">下一页</a>
+            {[/if]}
+
+            <span class="layui-laypage-skip">到第<input type="text" min="1" maxlength="6" max="999999" value="{[$_page.page]}" class="layui-input" id="_pageRedirectNum">页
+                <button type="button" class="layui-laypage-btn" id="_pageRedirect" >确定</button>
+            </span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var pageNum = {[$_page.page]};
+
+    function buildPageUrl(page) {
+        var url = window.location.href;
+        var url = url_append_parameter(url, 'page', page);
+        var dataSize = $('#_pageDataSize').val();
+        return url_append_parameter(url, 'pagerows', dataSize);
+    }
+
+    $('._pageFisrt').click(function() {
+        showLoading();
+        redirect(buildPageUrl(1));
+    });
+
+    $('._pagePre').click(function() {
+        var num = pageNum > 1 ? (pageNum - 1) : 1;
+        showLoading();
+        redirect(buildPageUrl(num));
+    });
+
+    $('._pageNext').click(function() {
+        showLoading();
+        redirect(buildPageUrl(pageNum + 1));
+    });
+
+    $('#_pageRedirect').click(function() {
+        var num = $('#_pageRedirectNum').val();
+        if (num < 1) {
+            num = 1;
+        }
+        showLoading();
+        redirect(buildPageUrl(num));
+    })
+</script>
+{[/if]}

@@ -1,0 +1,72 @@
+{[include file="../../../common/header.html"]}
+
+
+<ul class="layui-timeline">
+    {[foreach $login as $key => $val]}
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">{[$key]}</h3>
+                <table class="layui-static-table" lay-filter="table_data" lay-size="">
+                    <thead>
+                        <tr>
+                            <th lay-data="{field:'uid'}">用户ID</th>
+                            <th lay-data="{field:'username'}">用户名</th>
+                            <th lay-data="{field:'mid'}">设备id</th>
+                            <th lay-data="{field:'gid'}">游戏id</th>
+                            <th lay-data="{field:'ip'}">ip</th>
+                            <th lay-data="{field:'device_type'}">机型</th>
+                            <th lay-data="{field:'add_time'}">登录时间</th>
+                            <th lay-data="{field:'action'}">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[foreach $login[$key] as $k => $v]}
+                            <tr>
+                                <td>{[$v.uid]}</td>
+                                <td>{[$v.username]}</td>
+                                <td>{[$v.mid]}</td>
+                                <td>{[$v.gid]}</td>
+                                <td>{[$v.ip]}</td>
+                                <td>{[$v.device_type]}</td>
+                                <td>{[$v.add_time]}</td>
+                                <td>
+                                    <a href="javascript:" class="layui-btn layui-btn-sm" onclick="catinfo({[$v.uid]},{[$v.id]})"><i class="layui-icon layui-icon-edit"></i>查看详情</a>
+                                </td>
+                            </tr>
+                        {[/foreach]}
+                    </tbody>
+                </table>
+            </div>
+        </li>
+    {[/foreach]}
+</ul>
+
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+    var url = "{[$_baseUrl]}/user/log/login/info";
+    // 渲染表单主键样式
+    form.render();
+
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 0,
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+    function catinfo(uid,id) {
+        var evenUrl = url+'?uid='+uid+'&id='+id;
+        openWindow(evenUrl,'查看登陆详情');
+    }
+
+
+
+
+</script>

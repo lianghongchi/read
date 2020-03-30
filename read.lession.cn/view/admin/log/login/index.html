@@ -1,0 +1,150 @@
+{[include file="../../../common/header.html"]}
+
+<form class="layui-form list-tooltar-search" action="?" method="get">
+    <div class="layui-inline">
+        <div class="layui-input-inline">
+            <label>管理员ID</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_id" value="{[$adminid]}" placeholder="输入管理员ID" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-input-inline">
+            <label>IP</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ip" value="{[$ip]}" placeholder="输入IP地址" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-input-inline">
+            <label>登录状态</label>
+            <div class="layui-input-inline">
+                <select name="status" lay-verify="">
+                    <option value="" {[if $status == '']}selected{[/if]}>全部</option>
+                    {[foreach $statusList as $key => $val]}
+                    <option value="{[$key]}" {[if $status == $key]}selected{[/if]}>{[$val]}</option>
+                    {[/foreach]}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-input-inline">
+            <label>登录时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="add_time1" value="{[$addTime1]}" placeholder="起始时间" autocomplete="off" class="layui-input" id="add_time1">
+            </div>
+            <label>-</label>
+            <div class="layui-input-inline">
+                <input type="text" name="add_time2" value="{[$addTime2]}" placeholder="结束时间" autocomplete="off" class="layui-input" id="add_time2">
+            </div>
+        </div>
+
+        <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-sm _loading_page" lay-submit=""><i class="layui-icon layui-icon-search"></i>搜索</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/html" id="topToolbar">
+    <!--<div class="layui-btn-container">
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="detail">
+            <i class="layui-icon layui-icon-add-circle"></i>查看详情
+        </a>
+    </div>-->
+</script>
+
+<table class="layui-static-table" lay-filter="table_data" lay-size="">
+    <thead>
+    <tr>
+        <th lay-data="{field:'key', type: 'radio'}">选择</th>
+        <th lay-data="{field:'auto_id', sort:true, width:100}">登录ID</th>
+        <th lay-data="{field:'admin_id', sort:true, width:100}">管理员ID</th>
+        <th lay-data="{field:'agent'}">agent</th>
+        <th lay-data="{field:'ip'}">ip</th>
+        <th lay-data="{field:'status'}">登录状态</th>
+        <th lay-data="{field:'add_time_text', width:160, sort:true}">添加时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    {[foreach $data as $key => $val]}
+    <tr>
+        <td>{[$key]}</td>
+        <td>{[$val.auto_id]}</td>
+        <td>{[$val.admin_id]}</td>
+        <td>{[$val.agent]}</td>
+        <td>{[$val.ip]}</td>
+        <td>{[$val.status_text]}</td>
+        <td>{[$val.add_time_text]}</td>
+    </tr>
+    {[/foreach]}
+    </tbody>
+</table>
+
+{[include file="../../../common/page.html"]}
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+
+    // 查看详情
+    var eventDetailUrl = "{[$_baseUrl]}/admin/adminpost/edit";
+
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+
+    // 渲染表单主键样式
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#add_time1',
+    });
+    laydate.render({
+        elem: '#add_time2',
+    });
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 68+$('.list-tooltar-search').height();
+    }
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+
+    // 监听行工具事件
+    table.on('toolbar(table_data)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        // 调试打印事件
+        d(checkStatus);
+        // 调试打印选中的数据， 使用 . 可获取选中数据的属性值
+        d(checkStatus.data[0]);
+
+        // 判断事件
+        switch (obj.event) {
+            // 查看详情
+            case 'detail':
+                eventDetail();
+                break;
+        }
+    });
+
+    function eventDetail(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var detailUrl = eventDetailUrl + '?uid=' + checkStatus.data[0].uid;
+
+        /**
+         * 打开弹层新窗口
+         * @param  {string} url 窗口URL地址
+         * @param  {string} info 窗口顶部标题
+         * @param  {string} area 窗口大小，(min 小窗口，med 中型窗口，max 大窗口，ra 固定比例的大窗口(页面的80%)，自定义窗口大小=>格式：["1000px", "500px"]，默认max)
+         */
+        openWindow(detailUrl, '用户详情', 'max');
+    }
+
+</script>

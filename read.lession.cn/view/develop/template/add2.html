@@ -1,0 +1,143 @@
+{[include file="../../common/header.html"]}
+
+<!--表单:-->
+<div id="app" v-cloak>
+    <form class="layui-form form-post-table" action="" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户昵称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="user_nick" required lay-verify="checkNick" placeholder="请输入用户昵称" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">昵称必须是2-16个字符</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" required lay-verify="checkPasswd" placeholder="请设置登录密码" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">请设置6-16位的登录密码</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择所在城市</label>
+            <div class="layui-input-block" style="width:350px;">
+                <select name="city" lay-verify="required">
+                    <option value=""></option>
+                    {[foreach $cityList as $key => $value]}
+                    <option value="{[$key]}">{[$value]}</option>
+                    {[/foreach]}
+                </select>
+                <!-- <div class="layui-form-mid layui-word-aux">选择所在城市</div> -->
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">标签</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="like[kl]" title="热爱运动" checked>
+                <input type="checkbox" name="like[nx]" title="阅读">
+                <input type="checkbox" name="like[wz]" title="逛街">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">首次登录重设密码</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男">
+                <input type="radio" name="sex" value="女" title="女" checked>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择生日</label>
+            <div class="layui-input-inline">
+                <input type="text" name="password" id="selectDate" required lay-verify="required" placeholder="选择日期" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">选择生日</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">个人简介</label>
+            <div class="layui-input-block">
+                <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    // 表单验证
+    form.verify({
+        checkNick: function(value) {
+            if (value.length < 2 || value.length > 16) {
+                return '昵称长度为2-16位';
+            }
+        },
+        checkPasswd: function(value) {
+            if (value.length < 6 || value.length > 16) {
+                return '登录密码长度为6-16位';
+            }
+        }
+    });
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            // 选择表单
+            form.render();
+            // 激活时间选择器
+            laydate.render({
+                elem: '#selectDate',
+            });
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+
+        // 调试打印信息
+        // layer.alert(JSON.stringify(data.field), {
+        //     title: '最终的提交信息'
+        // });
+
+        // 发起ajax请求
+        formRequest('?', 'post', data.field, function() {
+            // 显示loading 并刷新当前页面
+            showLoading();
+            parent.location.reload();
+        });
+
+        return false;
+    });
+</script>

@@ -1,0 +1,109 @@
+{[include file="../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <form class="layui-form form-post-table" action="" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户昵称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="user_nick" required lay-verify="checkNick" placeholder="请输入用户昵称" :value="user.user_nick" autocomplete="off" class="layui-input">
+                <div class="layui-form-mid layui-word-aux">昵称必须是6-16个字符</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择所在城市</label>
+            <div class="layui-input-block" style="width:190px;">
+                <select name="city" lay-verify="required">
+                    <option value=""></option>
+                    <option v-for="(item, index) in cityList" :value="index" :selected="index == user.city">{{item}}</option>
+                </select>
+                <div class="layui-form-mid layui-word-aux">选择所在城市</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="1" title="男" :checked="user.sex == 1">
+                <input type="radio" name="sex" value="2" title="女" :checked="user.sex == 2">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="submit-form" lay-filter="submit-form">提交保存</button>
+                <a class="layui-btn layui-btn-primary" href="javascript:showLoading();reloadPage();">重置</a>
+                <input type="hidden" name="uid" :value="user.uid">
+            </div>
+        </div>
+    </form>
+</div>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+
+    var user = {[json_encode($data)]};
+    var cityList = {[json_encode($cityList)]};
+
+    // 表单验证
+    form.verify({
+        checkNick: function(value) {
+            if (value.length < 2 || value.length > 16) {
+                return '昵称长度为2-16位';
+            }
+        },
+        checkPasswd: function(value) {
+            if (value.length < 6 || value.length > 16) {
+                return '登录密码长度为6-16位';
+            }
+        }
+    });
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            user: user,
+            cityList: cityList,
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            // 选择表单
+            form.render();
+            // 激活时间选择器
+            laydate.render({
+                elem: '#selectDate',
+            });
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+
+
+    // 表单提交监听
+    form.on('submit(submit-form)', function(data) {
+
+        // 调试打印信息
+        // layer.alert(JSON.stringify(data.field), {
+        //     title: '最终的提交信息'
+        // });
+
+        // 发起ajax请求
+        formRequest('?', 'post', data.field, function() {
+            // 显示loading 并刷新当前页面
+            showLoading();
+            parent.location.reload();
+        });
+
+        return false;
+    });
+</script>

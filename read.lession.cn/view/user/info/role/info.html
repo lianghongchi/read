@@ -1,0 +1,103 @@
+{[include file="../../../common/header.html"]}
+
+<!--表单:-->
+<div id="app">
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <p></p>
+        </div>
+    </div>
+
+    <table class="layui-table">
+        <tbody>
+        <colgroup>
+            <col width="150">
+            <col>
+        </colgroup>
+        <tr>
+            <td align="right">用户uid</td>
+            <td>{[$user['uid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备id</td>
+            <td>{[$user['mid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">游戏id</td>
+            <td>{[$user['gid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">区服id</td>
+            <td>{[$user['sid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时的渠道id</td>
+            <td>{[$user['chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时的子渠道id</td>
+            <td>{[$user['sub_chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">角色名</td>
+            <td>{[$user['role']]}</td>
+        </tr>
+        <tr>
+            <td align="right">创号时间</td>
+            <td>{[$user['role_time']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备激活渠道ID</td>
+            <td>{[$user['mid_active_chid']]}</td>
+        </tr>
+        <tr>
+            <td align="right">设备激活时间</td>
+            <td>{[$user['mid_active_time']]}</td>
+        </tr>
+        <tr>
+            <td align="right">是否首次创号</td>
+            <td>{[if $user['is_first'] == 1]}是{[else]} 否 {[/if]}</td>
+        </tr>
+        <tr>
+            <td align="right">添加时间</td>
+            <td>{[$user['add_time']]}</td>
+        </tr>
+        <tr>
+            <td align="right">最高等级</td>
+            <td>{[$user['max_level']]}</td>
+        </tr>
+        <tr>
+            <td align="right">更新等级时间</td>
+            <td>{[$user['last_level_time']]}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+{[include file="../../../common/footer.html"]}
+
+<script type="text/javascript">
+    var layer = layui.layer;
+    var form = layui.form;
+    var laydate = layui.laydate;
+    var colorpicker = layui.colorpicker;
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        // vue渲染数据后执行layui初始化，否则layui组件不能加载
+        mounted:function() {
+            form.render();
+        },
+        computed:{
+
+        },
+        methods: {
+
+        }
+    });
+
+</script>

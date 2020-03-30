@@ -1,0 +1,178 @@
+{[include file="../../common/header.html"]}
+
+<script type="text/html" id="topToolbar">
+    <div class="layui-btn-container">
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="add">
+            <i class="layui-icon layui-icon-add-circle"></i>添加菜单
+        </a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a href="javascript:;" class="layui-btn layui-btn-sm" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</a>
+    </div>
+</script>
+
+<table class="layui-static-table" lay-filter="table_data" lay-size="">
+    <thead>
+    <tr>
+        <th lay-data="{field:'key', type: 'radio'}">选择</th>
+        <th lay-data="{field:'id'}">菜单ID</th>
+        <th lay-data="{field:'title', sort:true }">菜单名称</th>
+        <th lay-data="{field:'icon'}">icon</th>
+        <th lay-data="{field:'controller'}">Controller</th>
+        <th lay-data="{field:'action'}">Action</th>
+        <th lay-data="{field:'ptitle'}">上级菜单</th>
+        <th lay-data="{field:'sort'}">权重</th>
+    </tr>
+    </thead>
+    <tbody>
+    {[foreach $data as $key => $val]}
+        <tr>
+            <td>{[$key]}</td>
+            <td>{[$val.id]}</td>
+            <td>{[$val.title]}</td>
+            <td>{[$val.icon]}</td>
+            <td>{[$val.controller]}</td>
+            <td>{[$val.action]}</td>
+            <td>{[$val.ptitle]}</td>
+            <td>{[$val.sort]}</td>
+        </tr>
+        {[if !empty($val.items) ]}
+            {[foreach $val.items as $k => $v]}
+                <tr>
+                    <td>{[$k]}</td>
+                    <td>{[$v.id]}</td>
+                    <td>{[$v.title]}</td>
+                    <td>{[$v.icon]}</td>
+                    <td>{[$v.controller]}</td>
+                    <td>{[$v.action]}</td>
+                    <td>{[$v.ptitle]}</td>
+                    <td>{[$v.sort]}</td>
+                </tr>
+                {[if !empty($v.items)]}
+                    {[foreach $v.items as $ks => $vs]}
+                        <tr>
+                            <td>{[$ks]}</td>
+                            <td>{[$vs.id]}</td>
+                            <td>{[$vs.title]}</td>
+                            <td>{[$vs.icon]}</td>
+                            <td>{[$vs.controller]}</td>
+                            <td>{[$vs.action]}</td>
+                            <td>{[$vs.ptitle]}</td>
+                            <td>{[$vs.sort]}</td>
+                        </tr>
+                    {[/foreach]}
+                {[/if]}
+            {[/foreach]}
+        {[/if]}
+    {[/foreach]}
+    </tbody>
+</table>
+
+{[include file="../../common/footer.html"]}
+
+<script type="text/javascript">
+
+    // 添加
+    var eventAddUrl = "{[$_baseUrl]}/menu/menupost/add";
+    // 修改
+    var eventEditUrl = "{[$_baseUrl]}/menu/menupost/edit";
+    // 删除
+    var eventDeleteUrl = "{[$_baseUrl]}/menu/menupost/delete";
+
+
+    var layer = layui.layer;
+    var laydate = layui.laydate;
+    var table = layui.table;
+    var form = layui.form;
+
+    // 渲染表单主键样式
+    form.render();
+    // 激活日期控件
+    laydate.render({
+        elem: '#add_time1',
+    });
+    laydate.render({
+        elem: '#add_time2',
+    });
+
+    // 为自适应表格高度，计算顶部搜索部分所占高度
+    function getTableFullOffsetHeight() {
+        return 68+$('.list-tooltar-search').height();
+    }
+
+    // 初始化数据表格
+    table.init('table_data', {
+        height: 'full-' + getTableFullOffsetHeight(),
+        toolbar: '#topToolbar',
+        limit: 500,
+    });
+
+    // 监听行工具事件
+    table.on('toolbar(table_data)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        // 调试打印事件
+        d(checkStatus);
+        // 调试打印选中的数据， 使用 . 可获取选中数据的属性值
+        d(checkStatus.data[0]);
+
+        // 判断事件
+        switch (obj.event) {
+            // 表单模板
+            case 'add':
+                eventAdd();
+                break;
+            // 编辑数据
+            case 'edit':
+                eventEdit(checkStatus);
+                break;
+            case 'delete':
+                eventDelete(checkStatus);
+                break;
+        }
+    });
+
+    // 添加数据
+    function eventAdd() {
+
+        openWindow(eventAddUrl);
+    }
+
+    // 编辑
+    function eventEdit(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var editUrl = eventEditUrl + '?id=' + checkStatus.data[0].id;
+        console.log(editUrl);
+        // 自定义窗口大小
+        //alert(editUrl);
+        openWindow(editUrl, '编辑菜单信息');
+    }
+
+    // 删除
+    function eventDelete(checkStatus) {
+        if (checkStatus.data.length != 1) {
+            return tos('请选择一条数据');
+        }
+        var id = checkStatus.data[0].id;
+        // 弹出删除确认框
+        confirmMessage('菜单ID：'+id+'，确认删除此条数据吗？', function(){
+            // 显示loading，防止重复提交
+            showLoading('正在删除..');
+            simpleRequest(eventDeleteUrl, 'post', {id: id}, function(code, msg, redata){
+                // 隐藏loading
+                hideLoading();
+                // 非200 显示错误提示
+                if (code != 200) {
+                    return errorMessage(msg);
+                }
+                // 删除成功
+                return successMessage(msg, function (){
+                    // 删除成功后  显示loading，重新加载此页面
+                    showLoading();
+                    reloadPage();
+                });
+            });
+        });
+    }
+
+</script>
