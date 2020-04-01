@@ -32,7 +32,6 @@ defined('EXT') || define('EXT', '.php');
 
 //defined('KIS_ENV') || define('KIS_ENV', 'PRO');
 //defined('KIS_ENV') || define('KIS_ENV', getenv("PROJECT_ENV"));
-$_SERVER['KIS_ENV'] = 'DEV';
 defined('KIS_ENV') || define('KIS_ENV', $_SERVER['KIS_ENV']);
 /* 应用程序根目录 这个应该在外部定义 */
 defined('KIS_APPLICATION_ROOT')       || define('KIS_APPLICATION_ROOT', $_SERVER['DOCUMENT_ROOT'] . DS);
