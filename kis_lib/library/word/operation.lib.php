@@ -23,6 +23,9 @@ class lib_word_operation {
                     $temp = trim($temp, '.');
                     $temp = trim($temp, ',');
                     $temp = trim($temp, "'");
+                    if(empty($temp)) {
+                        continue;
+                    }
                     $info = $r->ZRANK($sortSetKey, $temp);
                     if(empty($info)) {
                         $r->ZADD($sortSetKey, 1, $temp);
