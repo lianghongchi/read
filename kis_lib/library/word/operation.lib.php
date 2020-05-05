@@ -9,7 +9,7 @@ class lib_word_operation {
     public static function operation() {
         $r = new r(self::$redisGroup);
         foreach (self::$file as $item) {
-            $arr = file('./'. $item);
+            $arr = file($item);
             print_r($arr);
         }
         exit();
