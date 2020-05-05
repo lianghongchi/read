@@ -8,9 +8,21 @@ class lib_word_operation {
 
     public static function operation() {
         $r = new r(self::$redisGroup);
+        $sortSetKey = self::$redisPre. 'sort_set_list';
         foreach (self::$file as $item) {
             $arr = file($item);
-            print_r($arr);
+            foreach ($arr as $value) {
+                $strArr = explode(' ', $value);
+                foreach ($strArr as $str) {
+                    $temp = trim($str, ' ');
+                    $info = $r->ZRANK($sortSetKey, $temp);
+                    if(empty($info)) {
+                        $r->ZADD($sortSetKey, 1, $temp);
+                    } else {
+                        $r->ZINCRBY($sortSetKey, 1, $temp);
+                    }
+                }
+            }
         }
         exit();
     }
