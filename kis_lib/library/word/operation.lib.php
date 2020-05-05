@@ -16,6 +16,13 @@ class lib_word_operation {
                 foreach ($strArr as $str) {
                     $temp = trim($str, ' ');
                     $temp = trim($temp, '\\n');
+                    $temp = trim($temp, '"');
+                    $temp = trim($temp, '-');
+                    $temp = trim($temp, '(');
+                    $temp = trim($temp, ')');
+                    $temp = trim($temp, '.');
+                    $temp = trim($temp, ',');
+                    $temp = trim($temp, "'");
                     $info = $r->ZRANK($sortSetKey, $temp);
                     if(empty($info)) {
                         $r->ZADD($sortSetKey, 1, $temp);
