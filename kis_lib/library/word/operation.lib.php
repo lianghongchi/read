@@ -4,7 +4,7 @@ class lib_word_operation {
     private static $redisPre = 'word_';
     private static $redisTimeout = 86400;
 
-    private static $file = ['a.txt'];
+    private static $file = ['/opt/newweb/read/kis_lib/library/word/a.txt'];
 
     public static function operation() {
         $r = new r(self::$redisGroup);
