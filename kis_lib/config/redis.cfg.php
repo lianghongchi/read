@@ -12,9 +12,7 @@
 
 if (KIS_ENV == 'DEV') {
     $config = [
-        'default' => [['host' => '127.0.0.1', 'port' => '6379'],],
-        'user' => [['host' => '127.0.0.1', 'port' => '6379'],],
-        'medicine' => [['host' => '127.0.0.1', 'port' => '6379'],],
+        'word' => [['host' => '127.0.0.1', 'port' => '6379'],],
     ];
 } else if (KIS_ENV == 'ONLINE_TEST') {
     $config = [
